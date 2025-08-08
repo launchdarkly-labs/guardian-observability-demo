@@ -6,18 +6,17 @@ import cors from 'cors';
 
 dotenv.config();
 const PORT = process.env.PORT || 3000
-const app = express();
-
-app.use(cors());
 
 // Initialize LaunchDarkly client with your project's SDK key
 // This connects your application to LaunchDarkly's service
 const ldClient = init(process.env.LD_SDK_KEY ?? '', {
     plugins: [ new Observability({
         serviceName: 'guarded-rollout-demo',
-        serviceVersion: '1.0.0',
     }), ],
 });
+
+const app = express();
+app.use(cors());
 
 // setting up a user context, we'll need to fill in the key as a unique identifier later
 const context: LDContext = {
