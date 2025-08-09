@@ -6,7 +6,7 @@
   "scripts": {
     "build": "tsc",
     "start": "node dist/server.js",
-    "dev": "nodemon --watch 'src/**/*.ts' --exec 'node --loader ts-node/esm' src/server/server.ts",
+    "dev": "nodemon --watch 'src/**/*.ts' --env-file=.env --exec 'node --loader ts-node/esm' src/server/server.ts",
     "lint": "eslint 'src/**/*.ts'"
   },
   "keywords": [],
@@ -17,7 +17,6 @@
     "@launchdarkly/node-server-sdk": "^9.10.1",
     "@launchdarkly/observability-node": "^0.2.1",
     "cors": "^2.8.5",
-    "dotenv": "^17.2.1",
     "express": "^5.1.0"
   },
   "devDependencies": {
