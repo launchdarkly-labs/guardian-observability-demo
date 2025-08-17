@@ -1,12 +1,11 @@
 {
   "name": "guarded-rollout-demo",
   "version": "1.0.0",
-  "type": "module",
   "main": "index.js",
   "scripts": {
     "build": "tsc",
-    "start": "node dist/server.js",
-    "dev": "nodemon --watch 'src/**/*.ts' --env-file=.env --exec 'node --loader ts-node/esm' src/server/server.ts",
+    "start": "node --env-file=.env dist/server.js",
+    "dev": "nodemon --watch 'src/**/*.ts' --exec 'node --env-file=.env -r ts-node/register' src/server/server.ts",
     "lint": "eslint 'src/**/*.ts'"
   },
   "keywords": [],

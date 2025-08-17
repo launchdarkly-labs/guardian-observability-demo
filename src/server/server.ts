@@ -24,38 +24,29 @@ const context: LDContext = {
 
 // how often the old and new API logic will throw an error, as %
 const ERROR_RATES = {
-    old: 50,
+    old: 10,
     new: 30
 }
 
-app.get('/what', (req, res) => {
-    console.log('whatwhat')
-    if (Math.random() > 0.5) {
-        console.log('crashing')
-        throw new Error('error, what error?')
-    }
-    res.sendStatus(200)
-})
-
 // basic API endpoint, using LaunchDarkly to migrate from an old version to a new one
-app.get('/echo/:key', async (req, res) => {
+app.get('/:key', async (req, res) => {
     const { key } = req.params
     context.key = key
     const serveNewApi = await ldClient.variation('clone-echo', context, false); // get our flag value from the LD SDK
     const rand = Math.random() * 100
 
-    // Old version logic, generates error event based on ERROR_RATES.old
+    // Old version logic, generates  based on ERROR_RATES.old
     const oldAPI = async () => {
         if (rand < ERROR_RATES.old) {
-            throw new Error('Old API Error')
+            throw new Error('OLD API ERROR')
         }
         res.status(200).json({ msg: `OLD` })
     }
 
-    // New version logic, generates error event based on ERROR_RATES.new
+    // New version logic, generates uncaught exception based on ERROR_RATES.new
     const newAPI = async () => {
         if (rand < ERROR_RATES.new) {
-            throw new Error('New API Error')
+            throw new Error('NEW API ERROR')
         }
         res.status(200).json({ msg: `NEW` })
     }
@@ -67,9 +58,9 @@ app.get('/echo/:key', async (req, res) => {
     else {
         await oldAPI()
     }
-}) 
+})
 
- 
+
 // Start the server
 app.listen(PORT, function (err) {
     if (err) {
