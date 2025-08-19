@@ -3,6 +3,7 @@ import { Observability, LDObserve } from '@launchdarkly/observability-node'
 import express, { Express, NextFunction, Request, Response } from 'express';
 import cors from 'cors';
 
+
 const PORT = process.env.PORT || 3000
 
 // Initialize LaunchDarkly client with your project's SDK key
@@ -32,7 +33,7 @@ const ERROR_RATES = {
 app.get('/:key', async (req, res) => {
     const { key } = req.params
     context.key = key
-    const serveNewApi = await ldClient.variation('clone-echo', context, false); // get our flag value from the LD SDK
+    const serveNewApi = await ldClient.variation('release-new-api', context, false); // get our flag value from the LD SDK
     const rand = Math.random() * 100
 
     // Old version logic, generates  based on ERROR_RATES.old
