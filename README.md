@@ -65,7 +65,7 @@ npm run dev:client
 
 The React client will open in your browser and begin generating API calls to the server when "Start Traffic" is clicked.
 
-## How Guarded Rollout Works
+## How Guarded Rollouts Works
 
 ### Traffic Control
 - The server uses LaunchDarkly to determine whether to execute old or new API logic
