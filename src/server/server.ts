@@ -31,12 +31,11 @@ const ERROR_RATES = {
 
 // basic API endpoint, using LaunchDarkly to migrate from an old version to a new one
 app.get('/:key', async (req, res) => {
-    const { key } = req.params
-    context.key = key
+    context.key = req.params.key
     const serveNewApi = await ldClient.variation('release-new-api', context, false); // get our flag value from the LD SDK
     const rand = Math.random() * 100
-
-    // Old version logic, generates  based on ERROR_RATES.old
+    
+    // express will automatically send a 500 status with the error details if an unhandled error occurs in a route
     const oldAPI = async () => {
         if (rand < ERROR_RATES.old) {
             throw new Error('OLD API ERROR')
@@ -44,7 +43,6 @@ app.get('/:key', async (req, res) => {
         res.status(200).json({ msg: `OLD` })
     }
 
-    // New version logic, generates uncaught exception based on ERROR_RATES.new
     const newAPI = async () => {
         if (rand < ERROR_RATES.new) {
             throw new Error('NEW API ERROR')
