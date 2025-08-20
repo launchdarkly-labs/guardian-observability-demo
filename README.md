@@ -60,8 +60,7 @@ This will start the Express server on port 3000. LaunchDarkly will automatically
 
 In a new terminal, from the root directory:
 ```bash
-cd src/client
-npm run dev
+npm run dev:client
 ```
 
 The React client will open in your browser and begin generating API calls to the server when "Start Traffic" is clicked.

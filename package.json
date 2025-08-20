@@ -6,6 +6,7 @@
     "build": "tsc",
     "start": "node --env-file=.env dist/server.js",
     "dev": "nodemon --watch 'src/**/*.ts' --exec 'node --env-file=.env -r ts-node/register' src/server/server.ts",
+    "dev:client": "cd src/client && npm run dev",
     "lint": "eslint 'src/**/*.ts'"
   },
   "keywords": [],
