@@ -78,7 +78,7 @@ The React client will open in your browser and begin generating API calls to the
 - LaunchDarkly Observability SDK captures HTTP 5xx response rates
 - When error rates exceed thresholds, Guarded Rollout triggers automatic rollback
 
-### Rollback Process
+### Rollout/Rollback Process
 1. Start a Guarded Rollout in LaunchDarkly dashboard
 2. Traffic gradually shifts to new API logic
 3. Elevated error rates are detected
@@ -147,6 +147,6 @@ guarded-rollout-demo/
 
 ## Learn More
 
-- [LaunchDarkly Guarded Rollout Documentation](https://docs.launchdarkly.com/guides/guardrails/guarded-rollouts)
+- [LaunchDarkly Guarded Rollout Documentation](https://launchdarkly.com/docs/home/releases/guarded-rollouts)
 - [LaunchDarkly Node.js Server SDK](https://docs.launchdarkly.com/sdk/server-side/node-js)
-- [LaunchDarkly Observability](https://docs.launchdarkly.com/sdk/concepts/observability) 
+- [LaunchDarkly Observability](https://launchdarkly.com/docs/home/observability) 
