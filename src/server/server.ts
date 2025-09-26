@@ -1,7 +1,8 @@
-import { init, LDContext, LDOptions } from '@launchdarkly/node-server-sdk';
 import { Observability, LDObserve } from '@launchdarkly/observability-node'
+import { init, LDContext, LDOptions } from '@launchdarkly/node-server-sdk';
 import express, { Express, NextFunction, Request, Response } from 'express';
 import cors from 'cors';
+import { setTimeout } from 'node:timers/promises';
 
 
 const PORT = process.env.PORT || 3000
@@ -47,6 +48,7 @@ app.get('/:key', async (req, res) => {
         if (rand < ERROR_RATES.new) {
             throw new Error('NEW API ERROR')
         }
+        await setTimeout(50)
         res.status(200).json({ msg: `NEW` })
     }
 
