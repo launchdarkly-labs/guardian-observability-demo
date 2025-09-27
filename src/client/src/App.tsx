@@ -19,7 +19,7 @@ function App() {
   const sendTrafficRequest = async () => {
     try {
       const key = generateRandomKey()
-      const response = await fetch(`http://localhost:3000/${key}`)
+      const response = await fetch(`https://quz5whe2k35grqot6rr4nt3kcu0lqkch.lambda-url.us-east-2.on.aws/?key=${key}`)
 
       if (!response.ok) {
         const text = await response.text()
