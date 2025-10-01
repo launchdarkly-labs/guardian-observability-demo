@@ -1,6 +1,6 @@
-import { init, LDContext, LDOptions } from '@launchdarkly/node-server-sdk';
-import { Observability, LDObserve } from '@launchdarkly/observability-node'
-import express, { Express, NextFunction, Request, Response } from 'express';
+import { init, LDContext } from '@launchdarkly/node-server-sdk';
+import { Observability } from '@launchdarkly/observability-node'
+import express from 'express';
 import cors from 'cors';
 
 
