@@ -1,13 +1,14 @@
+// FOR AWS JAM: add these two lines of LD imports
 import { init, LDContext } from '@launchdarkly/node-server-sdk';
 import { Observability } from '@launchdarkly/observability-node'
+
 import express from 'express';
 import cors from 'cors';
 
 
 const PORT = process.env.PORT || 3000
 
-// Initialize LaunchDarkly client with your project's SDK key
-// This connects your application to LaunchDarkly's service
+// FOR AWS JAM: initialize the LD client
 const ldClient = init(process.env.LD_SDK_KEY ?? '', {
     plugins: [new Observability({
         serviceName: 'guarded-rollout-demo',
@@ -17,11 +18,6 @@ const ldClient = init(process.env.LD_SDK_KEY ?? '', {
 const app = express();
 app.use(cors());
 
-// setting up a user context, we'll need to fill in the key as a unique identifier later
-const context: LDContext = {
-    "kind": 'user',
-    "key": ''
-};
 
 // how often the old and new API logic will throw an error, as %
 const ERROR_RATES = {
@@ -31,8 +27,14 @@ const ERROR_RATES = {
 
 // basic API endpoint, using LaunchDarkly to migrate from an old version to a new one
 app.get('/:key', async (req, res) => {
-    context.key = req.params.key
+
+    // FOR AWS JAM: create context and get flag variation
+    const context: LDContext = {
+        "kind": 'user',
+        "key": req.params.key
+    };
     const serveNewApi = await ldClient.variation('release-new-api', context, false); // get our flag value from the LD SDK
+
     const rand = Math.random() * 100
     
     // express will automatically send a 500 status with the error details if an unhandled error occurs in a route
@@ -50,7 +52,7 @@ app.get('/:key', async (req, res) => {
         res.status(200).json({ msg: `NEW` })
     }
 
-    // Use our flag to determine which code path to execute
+    // FOR AWS JAM: create conditional to determine which code path to execute based on flag variation
     if (serveNewApi) {
         await newAPI()
     }

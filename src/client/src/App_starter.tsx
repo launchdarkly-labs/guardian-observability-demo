@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
-// FOR AWS JAM: add useFlags to the import
-import { withLDProvider, useFlags } from 'launchdarkly-react-client-sdk'
+import { withLDProvider } from 'launchdarkly-react-client-sdk'
+import Observability from '@launchdarkly/observability'
+import SessionReplay from '@launchdarkly/session-replay'
 import './App.css'
 
 function App() {
@@ -10,7 +11,6 @@ function App() {
   const [newApiErrors, setNewApiErrors] = useState(0)
   const [isTrafficRunning, setIsTrafficRunning] = useState(false)
   const trafficInterval = useRef<NodeJS.Timeout | null>(null)
-  const {showApiResults} = useFlags()
 
   const generateRandomKey = () => {
     return Math.floor(1000000000 + Math.random() * 9000000000).toString()
@@ -19,7 +19,6 @@ function App() {
   const sendTrafficRequest = async () => {
     try {
       const key = generateRandomKey()
-      // FOR AWS JAM: change the URL to the address of the server
       const response = await fetch(`http://localhost:3000/${key}`)
 
       if (!response.ok) {
@@ -89,41 +88,32 @@ function App() {
           </div>
         </div>
       </div>
-      {/* FOR AWS JAM: add this code block and flag to release API results panel */}
-      {showApiResults && (
-      <div className="right-section">
-        <div className="results">
-          <h2>Results</h2>
-          <div className="counter-container">
-            <div className="counter">
-              <h3>Old API Hits</h3>
-              <p>{oldApiCount}</p>
-            </div>
-            <div className="counter">
-              <h3>New API Hits</h3>
-              <p>{newApiCount}</p>
-            </div>
-            <div className="counter error-counter">
-              <h3>Old API Errors</h3>
-              <p>{oldApiErrors}</p>
-            </div>
-            <div className="counter error-counter">
-              <h3>New API Errors</h3>
-              <p>{newApiErrors}</p>
-            </div>
-          </div>
-        </div>
-      </div>
-      )}
+
+
+      
     </div>
   )
 }
 
-// FOR AWS JAM: get the client side ID from the LaunchDarkly project
 export default withLDProvider({
-  clientSideID: '68dad60a88b6ae09b138273a',
+  clientSideID: '6622f4d207a0a80fed54a557',
   context: {
     kind: "user",
     key: 'abc-123',
+  },
+  options: {
+    plugins: [
+      new Observability({
+        networkRecording: {
+          enabled: true,
+          recordHeadersAndBody: true
+        }
+      }),
+      new SessionReplay({
+        serviceName: 'guarded-rollout-demo-UI',
+        // Obfuscation - see https://launchdarkly.com/docs/sdk/features/client-side-observability#privacy for more details
+        privacySetting: 'strict'
+      })
+    ]
   }
 })(App)
