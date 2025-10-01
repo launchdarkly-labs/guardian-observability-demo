@@ -1,7 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
-import { withLDProvider } from 'launchdarkly-react-client-sdk'
-import Observability from '@launchdarkly/observability'
-import SessionReplay from '@launchdarkly/session-replay'
+import { withLDProvider, useFlags } from 'launchdarkly-react-client-sdk'
 import './App.css'
 
 function App() {
@@ -11,6 +9,7 @@ function App() {
   const [newApiErrors, setNewApiErrors] = useState(0)
   const [isTrafficRunning, setIsTrafficRunning] = useState(false)
   const trafficInterval = useRef<NodeJS.Timeout | null>(null)
+  const { showApiResults } = useFlags()
 
   const generateRandomKey = () => {
     return Math.floor(1000000000 + Math.random() * 9000000000).toString()
@@ -33,7 +32,7 @@ function App() {
       }
       else {
         const data = await response.json()
-          if (data.msg === 'OLD') {
+        if (data.msg === 'OLD') {
           setOldApiCount(prev => prev + 1)
         } else if (data.msg === 'NEW') {
           setNewApiCount(prev => prev + 1)
@@ -88,7 +87,8 @@ function App() {
           </div>
         </div>
       </div>
-      
+
+      {showApiResults && (
       <div className="right-section">
         <div className="results">
           <h2>Results</h2>
@@ -112,6 +112,7 @@ function App() {
           </div>
         </div>
       </div>
+      )}
 
     </div>
   )
@@ -122,20 +123,5 @@ export default withLDProvider({
   context: {
     kind: "user",
     key: 'abc-123',
-  },
-  options: {
-    plugins: [
-      new Observability({
-        networkRecording: {
-          enabled: true,
-          recordHeadersAndBody: true
-        }
-      }),
-      new SessionReplay({
-        serviceName: 'guarded-rollout-demo-UI',
-        // Obfuscation - see https://launchdarkly.com/docs/sdk/features/client-side-observability#privacy for more details
-        privacySetting: 'strict'
-      })
-    ]
   }
 })(App)
