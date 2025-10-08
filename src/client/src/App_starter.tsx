@@ -98,20 +98,5 @@ export default withLDProvider({
   context: {
     kind: "user",
     key: 'abc-123',
-  },
-  options: {
-    plugins: [
-      new Observability({
-        networkRecording: {
-          enabled: true,
-          recordHeadersAndBody: true
-        }
-      }),
-      new SessionReplay({
-        serviceName: 'guarded-rollout-demo-UI',
-        // Obfuscation - see https://launchdarkly.com/docs/sdk/features/client-side-observability#privacy for more details
-        privacySetting: 'strict'
-      })
-    ]
   }
 })(App)
