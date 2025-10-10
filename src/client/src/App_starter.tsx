@@ -94,7 +94,7 @@ function App() {
 }
 
 export default withLDProvider({
-  clientSideID: '6622f4d207a0a80fed54a557',
+  clientSideID: '<your clientside ID here>',
   context: {
     kind: "user",
     key: 'abc-123',
