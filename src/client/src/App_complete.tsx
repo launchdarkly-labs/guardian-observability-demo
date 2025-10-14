@@ -20,8 +20,8 @@ function App() {
     try {
       const key = generateRandomKey()
       // FOR AWS JAM: change the URL to the address of the server
-      const response = await fetch(`http://localhost:3000/${key}`)
-
+      const response = await fetch(`http://${window.location.hostname}:3000/${key}`)
+      
       if (!response.ok) {
         const text = await response.text()
         if (text.includes('OLD API ERROR')) {
