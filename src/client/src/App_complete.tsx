@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 // FOR AWS JAM: add useFlags to the import
-import { withLDProvider, useFlags } from 'launchdarkly-react-client-sdk'
+import { withLDProvider, useFlags, useLDClient } from 'launchdarkly-react-client-sdk'
 import './App.css'
 
 function App() {
@@ -121,10 +121,40 @@ function App() {
 
 // FOR AWS JAM: get the client side ID from the LaunchDarkly project
 // TODO: put client side ID in variable, include some logic to check for valid client side ID and only render error message if invalid, wait for ready signal from LD init?
+const LD_CLIENT_SIDE_ID = '68dad60a88b6ae09b138273a'
+
+function AppWithReadyGate() {
+  const ldClient = useLDClient()
+  const [ready, setReady] = useState(false)
+
+  useEffect(() => {
+    if (!ldClient) return
+    let mounted = true
+    ldClient.waitForInitialization().then(() => {
+      if (mounted) setReady(true)
+    })
+    return () => { mounted = false }
+  }, [ldClient])
+
+  if (!ready) {
+    return (
+      <div className="app-container">
+        <div className="right-section">
+          <div className="results">
+            <h2>Loading features…</h2>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  return <App />
+}
+
 export default withLDProvider({
-  clientSideID: '68dad60a88b6ae09b138273a',
+  clientSideID: LD_CLIENT_SIDE_ID,
   context: {
     kind: "user",
     key: 'abc-123',
   }
-})(App)
+})(AppWithReadyGate)
