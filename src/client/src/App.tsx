@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
-import { withLDProvider } from 'launchdarkly-react-client-sdk'
+import { withLDProvider, useLDClient } from 'launchdarkly-react-client-sdk'
 import Observability from '@launchdarkly/observability'
 import SessionReplay from '@launchdarkly/session-replay'
 import './App.css'
@@ -93,10 +93,40 @@ function App() {
   )
 }
 
+const LD_CLIENT_SIDE_ID = '<your Production env clientside ID here>'
+
+function AppWithReadyGate() {
+  const ldClient = useLDClient()
+  const [ready, setReady] = useState(false)
+
+  useEffect(() => {
+    if (!ldClient) return
+    let mounted = true
+    ldClient.waitForInitialization().then(() => {
+      if (mounted) setReady(true)
+    })
+    return () => { mounted = false }
+  }, [ldClient])
+
+  if (!ready) {
+    return (
+      <div className="app-container">
+        <div className="right-section">
+          <div className="results">
+            <h2>Blocking on LaunchDarkly init, don't do this in a real app</h2>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  return <App />
+}
+
 export default withLDProvider({
-  clientSideID: '<your Production env clientside ID here>',
+  clientSideID: LD_CLIENT_SIDE_ID,
   context: {
     kind: "user",
     key: 'abc-123',
   }
-})(App)
+})(AppWithReadyGate)
