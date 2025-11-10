@@ -141,7 +141,7 @@ function AppWithReadyGate() {
       <div className="app-container">
         <div className="right-section">
           <div className="results">
-            <h2>Loading features…</h2>
+            <h2>Blocking on LaunchDarkly init, don't do this in a real app</h2>
           </div>
         </div>
       </div>
