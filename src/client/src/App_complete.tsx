@@ -120,6 +120,7 @@ function App() {
 }
 
 // FOR AWS JAM: get the client side ID from the LaunchDarkly project
+// TODO: put client side ID in variable, include some logic to check for valid client side ID and only render error message if invalid, wait for ready signal from LD init?
 export default withLDProvider({
   clientSideID: '68dad60a88b6ae09b138273a',
   context: {
