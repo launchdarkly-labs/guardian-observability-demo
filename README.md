@@ -33,37 +33,29 @@ LD_SDK_KEY=your_test_environment_sdk_key_here
 
 ### 2. Install Dependencies
 
-Install server dependencies:
+From the root directory (this also installs the client's dependencies):
 ```bash
 npm install
-```
-
-Install client dependencies:
-```bash
-cd src/client
-npm install
-cd ../..
 ```
 
 ## Running the Demo
 
-### 1. Start the Server
+### Development (hot reload)
 
-From the root directory:
 ```bash
 npm run dev
 ```
 
-This will start the Express server on port 3000. LaunchDarkly will automatically begin generating OpenTelemetry metrics.
+Starts the Express server on port 3000 and the Vite dev server for the React client in one terminal. LaunchDarkly will automatically begin generating OpenTelemetry metrics. Click "Start Traffic" in the client to begin generating API calls.
 
-### 2. Start the Client
+### Production build
 
-In a new terminal, from the root directory:
 ```bash
-npm run dev:client
+npm run build   # compiles the server to dist/ and the client to src/client/dist/
+npm start       # runs the compiled server (port 3000) and serves the built client (port 4173)
 ```
 
-The React client will open in your browser and begin generating API calls to the server when "Start Traffic" is clicked.
+Individual pieces can still be run on their own with `dev:server`, `dev:client`, `build:server`, `build:client`, `start:server`, and `start:client`.
 
 ## How Guarded Rollouts Works
 
