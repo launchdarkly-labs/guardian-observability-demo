@@ -2,6 +2,7 @@ import { init, LDContext } from '@launchdarkly/node-server-sdk';
 import { Observability } from '@launchdarkly/observability-node'
 import express from 'express';
 import cors from 'cors';
+import path from 'path';
 
 
 const PORT = process.env.PORT || 3000
@@ -29,8 +30,11 @@ const ERROR_RATES = {
     new: 30
 }
 
+// serve the built React client (run `npm run build` first)
+app.use(express.static(path.resolve('src/client/dist')))
+
 // basic API endpoint, using LaunchDarkly to migrate from an old version to a new one
-app.get('/:key', async (req, res) => {
+app.get('/api/:key', async (req, res) => {
     context.key = req.params.key
     const serveNewApi = await ldClient.variation('release-new-api', context, false); // get our flag value from the LD SDK
     const rand = Math.random() * 100

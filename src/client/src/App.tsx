@@ -19,7 +19,7 @@ function App() {
   const sendTrafficRequest = async () => {
     try {
       const key = generateRandomKey()
-      const response = await fetch(`http://localhost:3000/${key}`)
+      const response = await fetch(`/api/${key}`)
 
       if (!response.ok) {
         const text = await response.text()

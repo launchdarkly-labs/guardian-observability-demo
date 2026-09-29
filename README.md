@@ -8,7 +8,7 @@ The demo simulates a scenario where you're migrating from an old API endpoint to
 
 ### Architecture
 
-- **Server**: Node.js Express server with a single API endpoint (`/:key`)
+- **Server**: Node.js Express server with a single API endpoint (`/api/:key`) that also serves the built client
 - **Client**: React application that generates API calls with random user keys
 - **LaunchDarkly**: Controls traffic routing and monitors error rates via Observability SDK
 - **Guarded Rollout**: Automatically detects elevated HTTP 5xx response rates and rolls back
@@ -46,16 +46,18 @@ npm install
 npm run dev
 ```
 
-Starts the Express server on port 3000 and the Vite dev server for the React client in one terminal. LaunchDarkly will automatically begin generating OpenTelemetry metrics. Click "Start Traffic" in the client to begin generating API calls.
+Starts the Express server on port 3000 and the Vite dev server for the React client (http://localhost:5173) in one terminal. Vite forwards `/api` requests to the Express server. LaunchDarkly will automatically begin generating OpenTelemetry metrics. Click "Start Traffic" in the client to begin generating API calls.
 
 ### Production build
 
 ```bash
 npm run build   # compiles the server to dist/ and the client to src/client/dist/
-npm start       # runs the compiled server (port 3000) and serves the built client (port 4173)
+npm start       # serves the built client and the API from http://localhost:3000
 ```
 
-Individual pieces can still be run on their own with `dev:server`, `dev:client`, `build:server`, `build:client`, `start:server`, and `start:client`.
+In production everything is served from a single port (3000, or `PORT` if set), so that is the only port you need to open when deploying to a server. Run `npm start` from the project root, because the server looks for the built client at `src/client/dist`.
+
+The dev pieces can also be run in separate terminals with `npm run dev:server` and `npm run dev:client`.
 
 ## How Guarded Rollouts Works
 
@@ -97,7 +99,7 @@ To speed up the demo:
 
 ## API Endpoints
 
-- `GET /:key` - Main endpoint that routes traffic based on LaunchDarkly flag
+- `GET /api/:key` - Main endpoint that routes traffic based on LaunchDarkly flag
   - `:key` - Random user identifier used as LaunchDarkly context key
   - Returns JSON response indicating which API version was used
 
